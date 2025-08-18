@@ -34,6 +34,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
 
@@ -237,9 +238,10 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
     private Map<WeekDay, List<RatedTalk>> getVotingResults() {
         LOG.info("Loading PublicEventStats");
         return getRatingClientEnabledConfig()
-                .flatMap(_ignored -> RestCallHelper.getOptionalResponse(
-                        config.getEventStatsBaseUri() + "topTalks",
-                        Map.of("token", config.getEventStatsToken())))
+                .flatMap(
+                        _ignored -> RestCallHelper.getOptionalResponse(
+                                config.getEventStatsBaseUri() + "topTalks",
+                                Map.of("token", config.getEventStatsToken())))
                 .flatMap(r -> RestCallHelper.readOptionalFrom(r, map()))
                 .map(this::convertTopTalks)
                 .orElseGet(Map::of);
@@ -248,9 +250,10 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
     private Map<String, Integer> getTalkFavoriteCounts() {
         LOG.info("Loading TalksFavoriteCounts");
         return getRatingClientEnabledConfig()
-                .flatMap(_ignored -> RestCallHelper.getOptionalResponse(
-                        config.getEventStatsBaseUri() + "talksStats",
-                        Map.of("token", config.getEventStatsToken())))
+                .flatMap(
+                        _ignored -> RestCallHelper.getOptionalResponse(
+                                config.getEventStatsBaseUri() + "talksStats",
+                                Map.of("token", config.getEventStatsToken())))
                 .flatMap(r -> RestCallHelper.readOptionalFrom(r, map()))
                 .map(this::convertTalksStats)
                 .orElseGet(Map::of);
@@ -363,12 +366,12 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
         LOG.debug("Converting to Speaker: {}", input);
         final SpeakerImpl.Builder builder = SpeakerImpl.builder()
                 .withId(retrieveValue(input, "id", Number.class, Number::toString))
-                .withFirstName(retrieveValue(input, "firstName", String.class))
-                .withLastName(retrieveValue(input, "lastName", String.class))
+                .withFirstName(retrieveValue(input, "firstName", String.class, String::trim))
+                .withLastName(retrieveValue(input, "lastName", String.class, String::trim))
                 .withFullName(String.format("%s %s",
-                        retrieveValue(input, "firstName", String.class),
-                        retrieveValue(input, "lastName", String.class)))
-                .withCompany(retrieveValue(input, "company", String.class))
+                        retrieveValue(input, "firstName", String.class, String::trim),
+                        retrieveValue(input, "lastName", String.class, String::trim)))
+                .withCompany(retrieveValue(input, "company", String.class, String::trim))
                 .withAvatarURL(retrieveValue(input, "imageUrl", String.class))
                 .withTalks(retrieveValue(input, "talks", List.class,
                         list -> ((List<?>) list).stream()
@@ -376,9 +379,16 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
                                 .map(this::convertTalk)
                                 .toList()));
 
-        processValue(
-                retrieveValue(input, "twitterHandle", String.class),
-                twitterHandle -> builder.addSocialMedia("twitter", twitterHandle));
+        // collect optionally configured social user names
+        Map.of(
+                "twitterHandle", "twitter",
+                "linkedInUsername", "linkedin",
+                "blueskyUsername", "bluesky",
+                "mastodonUsername", "mastodon"
+        ).forEach((jsonKey, socialMediaName) -> processValue(
+                retrieveValue(input, jsonKey, String.class, String::trim),
+                Predicate.not(String::isBlank),
+                h -> builder.addSocialMedia(socialMediaName, h)));
 
         return builder.build();
     }
@@ -449,8 +459,8 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
                 : converter.apply(t);
     }
 
-    private static <T> void processValue(final T value, final Consumer<T> consumer) {
-        if (null != value) {
+    private static <T> void processValue(final T value, final Predicate<T> filter, final Consumer<T> consumer) {
+        if (null != value && filter.test(value)) {
             consumer.accept(value);
         }
     }

@@ -38,6 +38,6 @@ public class ConferenceClientImplTest extends ConferenceClientTestBase {
     }
 
     public ConferenceClientImplTest() {
-        super(ConferenceClientImpl.class, "friday", "3053", "17664");
+        super(ConferenceClientImpl.class, "friday", "4303", "3261");
     }
 }
