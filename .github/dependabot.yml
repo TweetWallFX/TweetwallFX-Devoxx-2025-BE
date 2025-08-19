@@ -24,6 +24,11 @@ updates:
     # Any gradle based dependencies
     directories:
       - "/"
+      - "/base"
+      - "/cinema"
+      - "/conference-impl"
+      - "/exhibition"
+      - "/hallway"
     # Raise pull requests for version updates on `master` branch
     target-branch: "main"
     schedule:
