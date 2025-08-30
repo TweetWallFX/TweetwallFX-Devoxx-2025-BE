@@ -1,12 +1,23 @@
 {
     "tweetwall": {
         "query": "<YOUR_QUERY>",
-        "title": "The JavaFX Cinema Tweetwall for <YOUR_NAME_HERE>!",
+        "title": "The JavaFX Cinema Tweetwall for Devoxx Belgium 2025!",
         "stylesheetResource": "tweetwall.css"
     },
 
     "stepEngine": {
         "steps": [
+            {
+                "stepClassName": "org.tweetwallfx.devoxx.base.stepengine.BackgroundSwitcher",
+                "config": {
+                    "backgrounds": [
+                        "backgrounds/Ultrarealistic_intricated_Cinematographic_view.png",
+                        "backgrounds/Ultrarealistic_intricated_General_cinema_sho.png",
+                        "backgrounds/Ultrarealistic_intricated_General_cinema_sho_2.png",
+                        "backgrounds/View_from_ground_level_view_from_a_futuristic.png"
+                    ]
+                }
+            },
             {
                 "stepClassName": "org.tweetwallfx.conference.stepengine.steps.ShowSchedule",
                 "config": {
@@ -56,32 +67,9 @@
                 }
             },
             {
-                "stepClassName": "org.tweetwallfx.conference.impl.DevoxxPhotoSharingMosaicStep",
-                "config": {
-                    "layoutX": 900,
-                    "layoutY": 165,
-                    "width": 950,
-                    "height": 700,
-                    "columns": 3,
-                    "rows": 3,
-                    "skipWhenSkipped": "TopRatedToday"
-                }
-            },
-            {
                 "stepClassName": "org.tweetwallfx.controls.steps.NodeFadeOutStep",
                 "config": {
                     "nodeSelector": "#topRatedeNode"
-                }
-            },
-            {
-                "stepClassName": "org.tweetwallfx.conference.impl.DevoxxPhotoSharingMosaicStep",
-                "config": {
-                    "layoutX": 35,
-                    "layoutY": 165,
-                    "width": 1860,
-                    "height": 700,
-                    "columns": 6,
-                    "rows": 3
                 }
             },
             {
@@ -130,18 +118,6 @@
                     "topVotedType": "WEEK",
                     "stepDuration": 500,
                     "skipTokenValue": "TopRatedWeek"
-                }
-            },
-            {
-                "stepClassName": "org.tweetwallfx.conference.impl.DevoxxPhotoSharingMosaicStep",
-                "config": {
-                    "layoutX": 900,
-                    "layoutY": 165,
-                    "width": 950,
-                    "height": 700,
-                    "columns": 3,
-                    "rows": 3,
-                    "skipWhenSkipped": "TopRatedWeek"
                 }
             },
             {
