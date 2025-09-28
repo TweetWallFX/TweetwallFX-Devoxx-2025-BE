@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2025 TweetWallFX
+ * Copyright (c) 2025 TweetWallFX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,23 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.tweetwallfx.conference.impl;
 
-dependencies {
-    api 'jakarta.ws.rs:jakarta.ws.rs-api'
+import org.tweetwallfx.config.ConfigurationConverter;
 
-    implementation 'org.slf4j:slf4j-api'
-    implementation 'org.tweetwallfx:tweetwallfx-cache:1.1.+'
-    implementation 'org.tweetwallfx:tweetwallfx-configuration:1.1.+'
-    implementation 'org.tweetwallfx:tweetwallfx-conference-spi:1.1.+'
-    implementation 'org.tweetwallfx:tweetwallfx-controls:1.1.+'
-    implementation 'org.tweetwallfx:tweetwallfx-conference-spi:1.1.+'
-    implementation 'org.tweetwallfx:tweetwallfx-stepengine-api:1.1.+'
-    implementation 'org.tweetwallfx:tweetwallfx-stepengine-dataproviders:1.1.+'
-    implementation 'org.tweetwallfx:tweetwallfx-transitions:1.1.+'
-    implementation 'org.tweetwallfx:tweetwallfx-utility:1.1.+'
-    implementation 'com.flickr4java:flickr4java:3.0.8'
+/**
+ * POJO for reading Settings Google APIs.
+ */
+public record FlickrSettings(
+        String apiKey,
+        String apiSecret,
+        String userId) {
 
-    runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl'
+    /**
+     * Configuration key under which the data for this settings object is stored
+     * in the configuration data map.
+     */
+    public static final String CONFIG_KEY = "flickr";
 
-    testImplementation 'org.tweetwallfx:tweetwallfx-conference-test:1.1.+'
+    /**
+     * Service implementation converting the configuration data of the root key
+     * {@link FlickrSettings#CONFIG_KEY} into {@link FlickrSettings}.
+     */
+    public static final class Converter implements ConfigurationConverter {
+
+        @Override
+        public String getResponsibleKey() {
+            return FlickrSettings.CONFIG_KEY;
+        }
+
+        @Override
+        public Class<?> getDataClass() {
+            return FlickrSettings.class;
+        }
+    }
 }

@@ -68,6 +68,12 @@
         "count": 25
     },
 
+    "org.tweetwallfx.conference.impl.FlickrPhotoDataProvider$Config": {
+        "photosetTitleFilters": [
+            "Devoxx Belgium 2025"
+        ]
+    },
+
     "org.tweetwallfx.google.vision.ImageContentFilterStep$Config": {
         "checkRetweeted": true,
         "adult": {

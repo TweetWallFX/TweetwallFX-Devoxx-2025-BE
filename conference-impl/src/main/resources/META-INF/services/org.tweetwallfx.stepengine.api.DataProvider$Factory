@@ -1,1 +1,2 @@
 org.tweetwallfx.conference.impl.DevoxxPhotoSharingDataProvider$FactoryImpl
+org.tweetwallfx.conference.impl.FlickrPhotoDataProvider$FactoryImpl

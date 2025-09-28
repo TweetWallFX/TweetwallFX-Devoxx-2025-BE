@@ -41,6 +41,17 @@
                 }
             },
             {
+                "stepClassName": "org.tweetwallfx.conference.impl.FlickrMosaicStep",
+                "config": {
+                    "layoutX": 950,
+                    "layoutY": 200,
+                    "width": 900,
+                    "height": 700,
+                    "columns": 3,
+                    "rows": 3
+                }
+            },
+            {
                 "stepClassName": "org.tweetwallfx.stepengine.steps.PauseStep",
                 "config": {
                     "amount": 15,
@@ -64,6 +75,18 @@
                     "topVotedType": "TODAY",
                     "stepDuration": 500,
                     "skipTokenValue": "TopRatedToday"
+                }
+            },
+            {
+                "stepClassName": "org.tweetwallfx.conference.impl.FlickrMosaicStep",
+                "config": {
+                    "layoutX": 950,
+                    "layoutY": 200,
+                    "width": 900,
+                    "height": 700,
+                    "columns": 3,
+                    "rows": 3,
+                    "skipWhenSkipped": "TopRatedToday"
                 }
             },
             {
@@ -95,6 +118,17 @@
                 }
             },
             {
+                "stepClassName": "org.tweetwallfx.conference.impl.FlickrMosaicStep",
+                "config": {
+                    "layoutX": 950,
+                    "layoutY": 200,
+                    "width": 900,
+                    "height": 700,
+                    "columns": 3,
+                    "rows": 3
+                }
+            },
+            {
                 "stepClassName": "org.tweetwallfx.stepengine.steps.PauseStep",
                 "config": {
                     "amount": 15,
@@ -118,6 +152,18 @@
                     "topVotedType": "WEEK",
                     "stepDuration": 500,
                     "skipTokenValue": "TopRatedWeek"
+                }
+            },
+            {
+                "stepClassName": "org.tweetwallfx.conference.impl.FlickrMosaicStep",
+                "config": {
+                    "layoutX": 950,
+                    "layoutY": 200,
+                    "width": 900,
+                    "height": 700,
+                    "columns": 3,
+                    "rows": 3,
+                    "skipWhenSkipped": "TopRatedWeek"
                 }
             },
             {

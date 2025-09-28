@@ -1,2 +1,2 @@
 org.tweetwallfx.conference.impl.DevoxxPhotoSharingMosaicStep$FactoryImpl
-
+org.tweetwallfx.conference.impl.FlickrMosaicStep$FactoryImpl
