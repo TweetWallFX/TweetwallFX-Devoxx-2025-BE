@@ -37,6 +37,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.ws.rs.core.GenericType;
 
@@ -238,12 +239,20 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
     private Map<WeekDay, List<RatedTalk>> getVotingResults() {
         LOG.info("Loading PublicEventStats");
         return getRatingClientEnabledConfig()
-                .flatMap(
-                        _ignored -> RestCallHelper.getOptionalResponse(
-                                config.getEventStatsBaseUri() + "topTalks",
-                                Map.of("token", config.getEventStatsToken())))
-                .flatMap(r -> RestCallHelper.readOptionalFrom(r, map()))
-                .map(this::convertTopTalks)
+                .map(_ignored -> Stream
+                .of("monday", "tuesday", "wednesday", "thursday", "friday")
+                .collect(Collectors.toMap(
+                        WeekDay::new,
+                        day -> RestCallHelper
+                                .getOptionalResponse(
+                                        config.getEventStatsBaseUri() + "getAllRatingStats",
+                                        Map.of(
+                                                "eventSlug", "dvbe25",
+                                                "day", day,
+                                                "token", config.getEventStatsToken()))
+                                .flatMap(r -> RestCallHelper.readOptionalFrom(r, map()))
+                                .map(this::convertVotingResults)
+                                .orElseGet(List::of))))
                 .orElseGet(Map::of);
     }
 
@@ -270,18 +279,13 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
     }
 
     @SuppressWarnings("unchecked")
-    private Map<WeekDay, List<RatedTalk>> convertTopTalks(final Map<String, Object> input) {
-        LOG.info("Converting TopTalks: {}", input);
-        return retrieveValue(input, "dailyTopTalks", List.class,
-                dailyTalksStatsList -> ((List<?>) dailyTalksStatsList).stream()
+    private List<RatedTalk> convertVotingResults(final Map<String, Object> input) {
+        LOG.info("Converting VotingResults: {}", input);
+        return retrieveValue(input, "talkRatings", List.class,
+                talkRatings -> ((List<?>) talkRatings).stream()
                         .map(o -> (Map<String, Object>) o)
-                        .collect(Collectors.toMap(
-                                dailyStats -> retrieveValue(dailyStats, "date", String.class, WeekDay::of),
-                                dailyStats -> retrieveValue(dailyStats, "topTalks", List.class,
-                                        topTalksList -> ((List<?>) topTalksList).stream()
-                                                .map(o -> (Map<String, Object>) o)
-                                                .map(this::convertRatedTalk)
-                                                .toList()))));
+                        .map(this::convertRatedTalk)
+                        .toList());
     }
 
     @SuppressWarnings("unchecked")
@@ -311,7 +315,7 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
         LOG.debug("Converting to RatedTalk: {}", input);
         return RatedTalkImpl.builder()
                 .withAverageRating(retrieveValue(input, "averageRating", Number.class, Number::doubleValue))
-                .withTotalRating(retrieveValue(input, "numberOfVotes", Number.class, Number::intValue))
+                .withTotalRating(retrieveValue(input, "totalRatings", Number.class, Number::intValue))
                 .withTalk(retrieveValue(input, "talkId", String.class,
                         talkId -> getTalk(talkId).get()))
                 .build();
