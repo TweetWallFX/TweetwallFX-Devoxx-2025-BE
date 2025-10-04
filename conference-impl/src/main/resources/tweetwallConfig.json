@@ -1,6 +1,6 @@
 {
     "conferenceClient": {
         "eventBaseUri": "https://dvbe25.cfp.dev/api/public",
-        "eventStatsBaseUri": "https://europe-west1-devoxx-companion-staging.cloudfunctions.net"
+        "eventStatsBaseUri": "https://europe-west1-cfp-dev-mobile-app.cloudfunctions.net"
     }
 }
