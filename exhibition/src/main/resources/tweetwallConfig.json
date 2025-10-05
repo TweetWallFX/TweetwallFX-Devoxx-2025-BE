@@ -1,8 +1,16 @@
 {
     "tweetwall": {
-        "query": "<YOUR_QUERY>",
+        "query": "#devoxx",
         "title": "The JavaFX Exhibition Tweetwall for Devoxx Belgium 2025!",
         "stylesheetResource": "tweetwall.css"
+    },
+
+    "configuration": {
+        "additionalConfigurationURLs": [
+            "https://raw.githubusercontent.com/mklaehn/TweetwallFX-Devoxx-2025-BE/refs/heads/conferenceConfig/configs/base/src/main/resources/tweetwallConfig_conference.json",
+            "https://raw.githubusercontent.com/mklaehn/TweetwallFX-Devoxx-2025-BE/refs/heads/conferenceConfig/configs/base/src/main/resources/tweetwallConfig_filters.json",
+            "https://raw.githubusercontent.com/mklaehn/TweetwallFX-Devoxx-2025-BE/refs/heads/conferenceConfig/configs/base/src/main/resources/tweetwallConfig_exhibition.json"
+        ]
     },
 
     "stepEngine": {
