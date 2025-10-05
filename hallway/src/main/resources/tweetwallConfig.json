@@ -1,12 +1,24 @@
 {
     "tweetwall": {
         "query": "<YOUR_QUERY>",
-        "title": "The JavaFX Hallway Tweetwall for <YOUR_NAME_HERE>!",
+        "title": "The JavaFX Hallway Tweetwall for Devoxx Belgium 2025!",
         "stylesheetResource": "tweetwall.css"
     },
 
     "stepEngine": {
         "steps": [
+            {
+                "stepClassName": "org.tweetwallfx.devoxx.base.stepengine.BackgroundSwitcher",
+                "config": {
+                    "backgrounds": [
+                        "backgrounds/DevoxxBelgium2025CinemaBackdrop-no-logos.png",
+                        "backgrounds/DevoxxBelgium2025CinemaBackdrop-2-no-logos.png",
+                        "backgrounds/DevoxxBelgium2025CinemaBackdrop-3-no-logos.png",
+                        "backgrounds/DevoxxBelgium2025CinemaBackdrop-4-no-logos.png",
+                        "backgrounds/DevoxxBelgium2025CinemaBackdrop-5-no-logos.png"
+                    ]
+                }
+            },
             {
                 "stepClassName": "org.tweetwallfx.conference.stepengine.steps.ShowSchedule",
                 "config": {
