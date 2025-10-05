@@ -70,7 +70,8 @@
 
     "org.tweetwallfx.conference.impl.FlickrPhotoDataProvider$Config": {
         "photosetTitleFilters": [
-            "Devoxx Belgium 2025"
+            "Devoxx Belgium 2025",
+            "Devoxx Belgium 2024 - Day 3"
         ]
     },
 
