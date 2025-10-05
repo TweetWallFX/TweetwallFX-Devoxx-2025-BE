@@ -74,8 +74,9 @@
                     "layoutY": 210,
                     "width": 950,
                     "height": 655,
-                    "columns": 3,
-                    "rows": 3,
+                    "numberOfImagesToChooseFrom": 160,
+                    "columns": 5,
+                    "rows": 4,
                     "skipWhenSkipped": "TopRatedToday"
                 }
             },
@@ -92,8 +93,9 @@
                     "layoutY": 210,
                     "width": 1860,
                     "height": 655,
-                    "columns": 6,
-                    "rows": 3
+                    "numberOfImagesToChooseFrom": 160,
+                    "columns": 9,
+                    "rows": 5
                 }
             },
             {
@@ -151,8 +153,9 @@
                     "layoutY": 210,
                     "width": 950,
                     "height": 655,
-                    "columns": 3,
-                    "rows": 3,
+                    "numberOfImagesToChooseFrom": 160,
+                    "columns": 5,
+                    "rows": 4,
                     "skipWhenSkipped": "TopRatedWeek"
                 }
             },
