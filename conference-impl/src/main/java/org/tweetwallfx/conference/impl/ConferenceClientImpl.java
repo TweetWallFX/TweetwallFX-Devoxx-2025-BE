@@ -39,6 +39,7 @@ import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 
 import org.slf4j.Logger;
@@ -260,9 +261,12 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
         LOG.info("Loading TalksFavoriteCounts");
         return getRatingClientEnabledConfig()
                 .flatMap(
-                        _ignored -> RestCallHelper.getOptionalResponse(
-                                config.getEventStatsBaseUri() + "talksStats",
-                                Map.of("token", config.getEventStatsToken())))
+                        _ignored -> RestCallHelper.postOptionalResponse(
+                                config.getEventStatsBaseUri() + "getAllFavoriteCounts",
+                                Map.of(),
+                                Entity.json(Map.of(
+                                        "data", Map.of(
+                                                "eventSlug", "dvbe25")))))
                 .flatMap(r -> RestCallHelper.readOptionalFrom(r, map()))
                 .map(this::convertTalksStats)
                 .orElseGet(Map::of);
@@ -291,12 +295,13 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
     @SuppressWarnings("unchecked")
     private Map<String, Integer> convertTalksStats(final Map<String, Object> input) {
         LOG.info("Converting TalksStats: {}", input);
-        final Map<String, Integer> result = retrieveValue(input, "perTalkStats", List.class,
-                perTalkStatsList -> ((List<?>) perTalkStatsList).stream()
+        final Map<String, Integer> result = retrieveValue(input, "result", Map.class,
+                r -> retrieveValue((Map<String, Object>) r, "talkFavorites", List.class,
+                        talkFavorites -> (List<?>) talkFavorites).stream()
                         .map(o -> (Map<String, Object>) o)
                         .collect(Collectors.toMap(
                                 perTalkStats -> retrieveValue(perTalkStats, "talkId", String.class),
-                                perTalkStats -> retrieveValue(perTalkStats, "totalFavoritesCount", Number.class,
+                                perTalkStats -> retrieveValue(perTalkStats, "favoriteCount", Number.class,
                                         Number::intValue))));
         LOG.info("Updated talkFavoriteCounts to: {}", result);
         return result;
