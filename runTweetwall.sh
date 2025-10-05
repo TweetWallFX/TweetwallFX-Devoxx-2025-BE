@@ -34,8 +34,8 @@ type=${1:?type was not provided}
 # Ensure (for the purposes of this script) that LANG is set to en_US
 export LANG=en_US.UTF-8
 
-# Set Java Platform to 24
-export JAVA_PLATFORM_VERSION=24
+# Set Java Platform to 25
+export JAVA_PLATFORM_VERSION=25
 
 # Update the git repos
 echo "# Pull the latest changes for TweetwallFX"
