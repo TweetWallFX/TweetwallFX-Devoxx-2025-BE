@@ -48,7 +48,6 @@ import javafx.util.Duration;
 
 import org.slf4j.LoggerFactory;
 import org.tweetwallfx.controls.WordleSkin;
-import org.tweetwallfx.controls.steps.ImageMosaicStep;
 import org.tweetwallfx.stepengine.api.DataProvider;
 import org.tweetwallfx.stepengine.api.Step;
 import org.tweetwallfx.stepengine.api.StepEngine.MachineContext;
@@ -149,6 +148,7 @@ public class FlickrMosaicStep implements Step {
         final double width = (0 != config.width ? config.width : pane.getWidth()) / (double) config.columns - 10;
         final double height = (0 != config.height ? config.height : pane.getHeight()) / (double) config.rows - 8;
         final List<ImageStorage> distillingList = imageStorages; // mutable list required
+        final Duration individualFadeInTransitionDuration = Duration.seconds(config.determineActualIndividualFadeInDuration());
 
         for (int i = 0; i < config.columns; i++) {
             for (int j = 0; j < config.rows; j++) {
@@ -166,7 +166,7 @@ public class FlickrMosaicStep implements Step {
                 rects[i][j].setLayoutX(bounds[i][j].getMinX());
                 rects[i][j].setLayoutY(bounds[i][j].getMinY());
                 pane.getChildren().add(rects[i][j]);
-                FadeTransition ft = new FadeTransition(Duration.seconds(0.3), imageView);
+                FadeTransition ft = new FadeTransition(individualFadeInTransitionDuration, imageView);
                 ft.setToValue(1);
                 allFadeIns.add(ft);
             }
@@ -180,7 +180,7 @@ public class FlickrMosaicStep implements Step {
         // select next random not but not previously shown image
         int index;
         do {
-            index = RANDOM.nextInt(config.columns * config.rows);
+            index = RANDOM.nextInt(config.countMosaicCells());
         } while (!highlightedIndexes.add(index));
 
         int column = index % config.columns;
@@ -336,13 +336,18 @@ public class FlickrMosaicStep implements Step {
         public double height = 0D;
         public int columns = 6;
         public int rows = 5;
+
+        private int countMosaicCells() {
+            return columns * rows;
+        }
+
         public String skipWhenSkipped;
         public int minimumNumberOfImagesInCache = -1;
 
         private int getMinimumNumberOfImagesInCacheCalculated() {
             return minimumNumberOfImagesInCache > 0
                     ? minimumNumberOfImagesInCache
-                    : columns * rows + Math.max(columns, rows);
+                    : countMosaicCells() + Math.max(columns, rows);
         }
 
         public int numberOfImagesToChooseFrom = -1;
@@ -351,11 +356,24 @@ public class FlickrMosaicStep implements Step {
         private int getNumberOfImagesToChooseFromCalculated() {
             return numberOfImagesToChooseFrom > 0
                     ? numberOfImagesToChooseFrom
-                    : (int) (numberOfImagesToChooseFromExtension * columns * rows);
+                    : (int) (numberOfImagesToChooseFromExtension * countMosaicCells());
         }
 
         public double percentageForHighlightImage = 0.8D;
         public double resizeAndHighlightTransitionTime = 2.5D;
         public int numberOfHighlights = 3;
+
+        public double maxCumulativeFadeInDuration = 6D;
+        public double maxIndividualFadeInDuration = 0.3D;
+        public double minIndividualFadeInDuration = 0.1D;
+
+        private double determineActualIndividualFadeInDuration() {
+            double individualFadeInDurationForMaxCumulatative = maxCumulativeFadeInDuration / countMosaicCells();
+            return Math.max(
+                    minIndividualFadeInDuration,
+                    Math.min(
+                            maxIndividualFadeInDuration,
+                            individualFadeInDurationForMaxCumulatative));
+        }
     }
 }
