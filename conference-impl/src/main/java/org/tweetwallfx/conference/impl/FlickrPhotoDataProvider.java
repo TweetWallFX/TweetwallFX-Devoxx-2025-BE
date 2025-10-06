@@ -40,6 +40,7 @@ import org.tweetwallfx.cache.URLContentCacheBase;
 import org.tweetwallfx.stepengine.api.DataProvider;
 import org.tweetwallfx.stepengine.api.config.StepEngineSettings;
 import org.tweetwallfx.stepengine.dataproviders.ImageStorageDataProvider;
+import org.tweetwallfx.util.Nullable;
 
 public class FlickrPhotoDataProvider
         extends ImageStorageDataProvider.Base
@@ -154,15 +155,12 @@ public class FlickrPhotoDataProvider
             Long initialDelay,
             Long scheduleDuration) implements ScheduledConfig {
 
-        @SuppressWarnings("unused")
         public Config {
             cacheSize = Objects.requireNonNullElse(cacheSize, 100);
             if (cacheSize <= 0) {
                 throw new IllegalArgumentException("property 'cacheSize' must be larger than zero");
             }
-            photosetTitleFilters = null == photosetTitleFilters
-                    ? Set.of()
-                    : Set.copyOf(Objects.requireNonNull(photosetTitleFilters));
+            photosetTitleFilters = Nullable.nullable(photosetTitleFilters);
             // for ScheduledConfig
             scheduleType = Objects.requireNonNullElse(scheduleType, ScheduleType.FIXED_RATE);
             initialDelay = Objects.requireNonNullElse(initialDelay, 5L);

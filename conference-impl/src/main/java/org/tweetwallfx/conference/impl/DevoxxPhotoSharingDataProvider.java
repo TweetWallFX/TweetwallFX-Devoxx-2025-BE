@@ -162,27 +162,19 @@ public class DevoxxPhotoSharingDataProvider
             Long initialDelay,
             Long scheduleDuration) implements ScheduledConfig {
 
-        @SuppressWarnings("unused")
-        public Config(
-                final String queryUrl,
-                final Integer pageSize,
-                final Integer cacheSize,
-                final ScheduleType scheduleType,
-                final Long initialDelay,
-                final Long scheduleDuration) {
-            this.queryUrl = queryUrl;
-            this.pageSize = Objects.requireNonNullElse(pageSize, 10);
-            if (this.pageSize <= 0) {
+        public Config {
+            pageSize = Objects.requireNonNullElse(pageSize, 10);
+            if (pageSize <= 0) {
                 throw new IllegalArgumentException("property 'pageSize' must be larger than zero");
             }
-            this.cacheSize = Objects.requireNonNullElse(cacheSize, 100);
-            if (this.cacheSize <= 0) {
+            cacheSize = Objects.requireNonNullElse(cacheSize, 100);
+            if (cacheSize <= 0) {
                 throw new IllegalArgumentException("property 'cacheSize' must be larger than zero");
             }
             // for ScheduledConfig
-            this.scheduleType = Objects.requireNonNullElse(scheduleType, ScheduleType.FIXED_RATE);
-            this.initialDelay = Objects.requireNonNullElse(initialDelay, 0L);
-            this.scheduleDuration = Objects.requireNonNullElse(scheduleDuration, 30 * 60L);
+            scheduleType = Objects.requireNonNullElse(scheduleType, ScheduleType.FIXED_RATE);
+            initialDelay = Objects.requireNonNullElse(initialDelay, 0L);
+            scheduleDuration = Objects.requireNonNullElse(scheduleDuration, 30 * 60L);
         }
     }
 
@@ -190,11 +182,8 @@ public class DevoxxPhotoSharingDataProvider
             List<SharedPhoto> photos,
             PageInfo pageInfo) {
 
-        public SharedPhotos(
-                final List<SharedPhoto> photos,
-                final PageInfo pageInfo) {
-            this.photos = nullable(photos);
-            this.pageInfo = pageInfo;
+        public SharedPhotos {
+            photos = nullable(photos);
         }
 
         @Override

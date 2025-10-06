@@ -23,6 +23,8 @@
  */
 package org.tweetwallfx.conference.impl;
 
+import java.util.Objects;
+
 import org.tweetwallfx.config.ConfigurationConverter;
 
 /**
@@ -38,6 +40,12 @@ public record FlickrSettings(
      * in the configuration data map.
      */
     public static final String CONFIG_KEY = "flickr";
+
+    public FlickrSettings {
+        apiKey = Objects.requireNonNullElse(apiKey, "property 'apiKey' must be non-empty");
+        apiSecret = Objects.requireNonNullElse(apiSecret, "property 'apiSecret' must be non-empty");
+        userId = Objects.requireNonNullElse(userId, "property 'userId' must be non-empty");
+    }
 
     /**
      * Service implementation converting the configuration data of the root key
