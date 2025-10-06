@@ -27,21 +27,18 @@ import com.flickr4java.flickr.photos.Photo;
 import com.flickr4java.flickr.photosets.Photoset;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.SequencedSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.stream.Stream;
 
 import org.tweetwallfx.cache.URLContentCacheBase;
 import org.tweetwallfx.stepengine.api.DataProvider;
 import org.tweetwallfx.stepengine.api.config.StepEngineSettings;
-import org.tweetwallfx.stepengine.dataproviders.ImageStorage;
 import org.tweetwallfx.stepengine.dataproviders.ImageStorageDataProvider;
 
 public class FlickrPhotoDataProvider
@@ -91,9 +88,17 @@ public class FlickrPhotoDataProvider
                 final Map<String, Object> additionalData = new TreeMap<>();
                 additionalData.put("photoId", photo.getId());
                 additionalData.put("photosetId", photoset.getId());
+                additionalData.put("dateAdded", Optional.ofNullable(photo.getDateAdded()).map(FlickrPhotoDataProvider::date).map(Object::toString).orElse("N/A"));
+                additionalData.put("datePosted", Optional.ofNullable(photo.getDatePosted()).map(FlickrPhotoDataProvider::date).map(Object::toString).orElse("N/A"));
+                additionalData.put("dateTaken", Optional.ofNullable(photo.getDateTaken()).map(FlickrPhotoDataProvider::date).map(Object::toString).orElse("N/A"));
 //                additionalData.put(ImageStorage.KEY_CATEGORY, photoset.getTitle()); // for grouping pictures by day/album
 
-                Stream.of(photo.getLargeSize(), photo.getMediumSize(), photo.getSmallSize())
+                Stream.of(
+//                        photo.getOriginalSize(),
+                        photo.getLargeSize(),
+                        photo.getMediumSize(),
+                        photo.getSmallSize())
+                        .filter(Objects::nonNull)
                         .findAny()
                         .ifPresent(s -> cacheBase.getCachedOrLoad(
                         s.getSource(),
@@ -150,7 +155,7 @@ public class FlickrPhotoDataProvider
             Long scheduleDuration) implements ScheduledConfig {
 
         @SuppressWarnings("unused")
-        public Config     {
+        public Config {
             cacheSize = Objects.requireNonNullElse(cacheSize, 100);
             if (cacheSize <= 0) {
                 throw new IllegalArgumentException("property 'cacheSize' must be larger than zero");
