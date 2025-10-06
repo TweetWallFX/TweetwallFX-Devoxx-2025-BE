@@ -79,7 +79,7 @@
             {
                 "stepClassName": "org.tweetwallfx.controls.steps.NodeFadeOutStep",
                 "config": {
-                    "nodeSelector": "#topRatedeNode"
+                    "nodeSelector": "#topRatedNode"
                 }
             },
             {
@@ -134,7 +134,7 @@
             {
                 "stepClassName": "org.tweetwallfx.controls.steps.NodeFadeOutStep",
                 "config": {
-                    "nodeSelector": "#topRatedeNode"
+                    "nodeSelector": "#topRatedNode"
                 }
             }
         ]
