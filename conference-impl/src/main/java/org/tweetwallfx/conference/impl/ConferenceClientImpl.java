@@ -23,15 +23,18 @@
  */
 package org.tweetwallfx.conference.impl;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -69,6 +72,14 @@ import org.tweetwallfx.util.ExpiringValue;
 public final class ConferenceClientImpl implements ConferenceClient, RatingClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConferenceClientImpl.class);
+    private static final Set<DayOfWeek> CONFERENCE_DAYS = Set.of(
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY,
+            DayOfWeek.FRIDAY
+    );
+
     private final ConferenceClientSettings config;
     private final Map<String, SessionType> sessionTypes;
     private final Map<String, Room> rooms;
@@ -239,17 +250,26 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
 
     private Map<WeekDay, List<RatedTalk>> getVotingResults() {
         LOG.info("Loading PublicEventStats");
+        final DayOfWeek todayDOW = LocalDate.now(ZoneId.systemDefault()).getDayOfWeek();
+        // don't load voting results for days that are in the future
+        final List<DayOfWeek> activeConferenceDays = CONFERENCE_DAYS.stream()
+                .sorted()
+                .takeWhile(dow -> todayDOW.compareTo(dow) >= 0)
+                .toList();
+
         return getRatingClientEnabledConfig()
-                .map(_ignored -> Stream
-                .of("monday", "tuesday", "wednesday", "thursday", "friday")
+                .filter(_ -> CONFERENCE_DAYS.contains(todayDOW))
+                .map(_ -> activeConferenceDays
+                .parallelStream()
+                .map(WeekDay::of)
                 .collect(Collectors.toMap(
-                        WeekDay::new,
+                        Function.identity(),
                         day -> RestCallHelper
                                 .getOptionalResponse(
                                         config.getEventStatsBaseUri() + "getAllRatingStats",
                                         Map.of(
                                                 "eventSlug", "dvbe25",
-                                                "day", day,
+                                                "day", day.dayId(),
                                                 "token", config.getEventStatsToken()))
                                 .flatMap(r -> RestCallHelper.readOptionalFrom(r, map()))
                                 .map(this::convertVotingResults)
@@ -487,10 +507,14 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
 
     protected static record WeekDay(String dayId) {
 
-        static WeekDay of(String date) {
-            return new WeekDay(LocalDate.parse(date).getDayOfWeek()
+        static WeekDay of(final DayOfWeek dayOfWeek) {
+            return new WeekDay(englishName(dayOfWeek));
+        }
+
+        static String englishName(final DayOfWeek dayOfWeek) {
+            return dayOfWeek
                     .getDisplayName(TextStyle.FULL, Locale.ENGLISH)
-                    .toLowerCase(Locale.ENGLISH));
+                    .toLowerCase(Locale.ENGLISH);
         }
     }
 }
