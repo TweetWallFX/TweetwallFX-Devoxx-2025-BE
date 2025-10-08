@@ -23,6 +23,7 @@
  */
 package org.tweetwallfx.conference.impl;
 
+import java.net.URI;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
@@ -40,13 +41,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tweetwallfx.cache.TimeToForgetCache;
 import org.tweetwallfx.conference.api.ConferenceClient;
 import org.tweetwallfx.conference.api.Identifiable;
 import org.tweetwallfx.conference.api.RatedTalk;
@@ -87,25 +88,26 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
     private final ExpiringValue<Map<String, Integer>> talkFavoriteCounts;
     private final ExpiringValue<Map<WeekDay, List<RatedTalk>>> ratedTalks;
 
+    @SuppressWarnings("unchecked")
     public ConferenceClientImpl() {
         this.config = Configuration.getInstance().getConfigTyped(
                 ConferenceClientSettings.CONFIG_KEY,
                 ConferenceClientSettings.class);
-        this.sessionTypes = RestCallHelper.readOptionalFrom(config.getEventBaseUri() + "session-types", listOfMaps())
-                .orElse(List.of())
+        this.sessionTypes = TimeToForgetCache.INSTANCE_60M.getJsonList(URI.create(config.getEventBaseUri() + "session-types"))
                 .stream()
+                .map(o -> (Map<String, Object>) o)
                 .map(this::convertSessionType)
                 .collect(Collectors.toMap(Identifiable::getId, Function.identity()));
         LOG.info("SessionType IDs: {}", sessionTypes.keySet());
-        this.rooms = RestCallHelper.readOptionalFrom(config.getEventBaseUri() + "rooms", listOfMaps())
-                .orElse(List.of())
+        this.rooms = TimeToForgetCache.INSTANCE_60M.getJsonList(URI.create(config.getEventBaseUri() + "rooms"))
                 .stream()
+                .map(o -> (Map<String, Object>) o)
                 .map(this::convertRoom)
                 .collect(Collectors.toMap(Identifiable::getId, Function.identity()));
         LOG.info("Room IDs: {}", rooms.keySet());
-        this.tracks = RestCallHelper.readOptionalFrom(config.getEventBaseUri() + "tracks", listOfMaps())
-                .orElse(List.of())
+        this.tracks = TimeToForgetCache.INSTANCE_60M.getJsonList(URI.create(config.getEventBaseUri() + "tracks"))
                 .stream()
+                .map(o -> (Map<String, Object>) o)
                 .map(this::convertTrack)
                 .collect(Collectors.toMap(Identifiable::getId, Function.identity()));
         LOG.info("Track IDs: {}", tracks.keySet());
@@ -120,7 +122,7 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
 
     @Override
     public String getName() {
-        return "DEVOXX_XYZ";
+        return "DEVOXX_2025";
     }
 
     @Override
@@ -134,21 +136,21 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<ScheduleSlot> getSchedule(final String conferenceDay) {
-        return RestCallHelper.readOptionalFrom(config.getEventBaseUri() + "schedules/" + conferenceDay, listOfMaps())
-                .orElse(List.of())
+        return TimeToForgetCache.INSTANCE_15M.getJsonList(URI.create(config.getEventBaseUri() + "schedules/" + conferenceDay))
                 .stream()
+                .map(o -> (Map<String, Object>) o)
                 .map(this::convertScheduleSlot)
                 .toList();
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<ScheduleSlot> getSchedule(final String conferenceDay, final String roomName) {
-        return RestCallHelper
-                .readOptionalFrom(config.getEventBaseUri() + "schedules/" + conferenceDay + '/' + roomName,
-                        listOfMaps())
-                .orElse(List.of())
+        return TimeToForgetCache.INSTANCE_15M.getJsonList(URI.create(config.getEventBaseUri() + "schedules/" + conferenceDay + '/' + roomName))
                 .stream()
+                .map(o -> (Map<String, Object>) o)
                 .map(this::convertScheduleSlot)
                 .toList();
     }
@@ -183,8 +185,8 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
 
     @Override
     public Optional<Talk> getTalk(final String talkId) {
-        return RestCallHelper.readOptionalFrom(config.getEventBaseUri() + "talks/" + talkId, map())
-                .map(this::convertTalk);
+        Map<String, Object> jsonMap = TimeToForgetCache.INSTANCE_15M.getJsonMap(URI.create(config.getEventBaseUri() + "talks/" + talkId));
+        return Optional.of(convertTalk(jsonMap));
     }
 
     @Override
@@ -306,7 +308,7 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
     private List<RatedTalk> convertVotingResults(final Map<String, Object> input) {
         LOG.info("Converting VotingResults: {}", input);
         return retrieveValue(input, "talkRatings", List.class,
-                talkRatings -> ((List<?>) talkRatings).stream()
+                talkRatings -> ((List<?>) talkRatings).parallelStream()
                         .map(o -> (Map<String, Object>) o)
                         .map(this::convertRatedTalk)
                         .toList());
