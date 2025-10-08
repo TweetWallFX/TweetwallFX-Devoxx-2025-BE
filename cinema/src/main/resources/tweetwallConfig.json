@@ -82,7 +82,7 @@
                     "layoutY": 210,
                     "width": 950,
                     "height": 655,
-                    "numberOfImagesToChooseFrom": 250,
+                    "numberOfImagesToChooseFrom": 2000,
                     "columns": 5,
                     "rows": 4,
                     "skipWhenSkipped": "TopRatedToday"
@@ -101,7 +101,7 @@
                     "layoutY": 210,
                     "width": 1860,
                     "height": 655,
-                    "numberOfImagesToChooseFrom": 250,
+                    "numberOfImagesToChooseFrom": 2000,
                     "columns": 9,
                     "rows": 5
                 }
@@ -161,7 +161,7 @@
                     "layoutY": 210,
                     "width": 950,
                     "height": 655,
-                    "numberOfImagesToChooseFrom": 250,
+                    "numberOfImagesToChooseFrom": 2000,
                     "columns": 5,
                     "rows": 4,
                     "skipWhenSkipped": "TopRatedWeek"

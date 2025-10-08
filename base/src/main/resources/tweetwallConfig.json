@@ -69,7 +69,7 @@
     },
 
     "org.tweetwallfx.conference.impl.FlickrPhotoDataProvider$Config": {
-        "cacheSize": 300,
+        "cacheSize": 2500,
         "photosetTitleFilters": [
             "Devoxx Belgium 2025",
             "Devoxx Belgium 2024 - Day 3"
