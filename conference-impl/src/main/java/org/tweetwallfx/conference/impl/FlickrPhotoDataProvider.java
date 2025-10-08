@@ -105,7 +105,7 @@ public class FlickrPhotoDataProvider
                         s.getSource(),
                         uc -> add(
                                 uc,
-                                date(photo.getDatePosted()),
+                                date(photo.getDateTaken()),
                                 additionalData)));
             }
         }
