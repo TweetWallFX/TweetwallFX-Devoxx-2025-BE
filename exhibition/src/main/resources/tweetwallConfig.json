@@ -49,7 +49,7 @@
                     "layoutY": 200,
                     "width": 900,
                     "height": 700,
-                    "numberOfImagesToChooseFrom": 2000,
+                    "numberOfImagesToChooseFrom": 1000,
                     "columns": 5,
                     "rows": 4
                 }
@@ -80,7 +80,7 @@
                     "layoutY": 200,
                     "width": 900,
                     "height": 700,
-                    "numberOfImagesToChooseFrom": 2000,
+                    "numberOfImagesToChooseFrom": 1000,
                     "columns": 5,
                     "rows": 4,
                     "skipWhenSkipped": "TopRatedToday"
@@ -107,7 +107,7 @@
                     "layoutY": 200,
                     "width": 1600,
                     "height": 700,
-                    "numberOfImagesToChooseFrom": 2000,
+                    "numberOfImagesToChooseFrom": 1000,
                     "columns": 9,
                     "rows": 5
                 }
@@ -134,7 +134,7 @@
                     "layoutY": 200,
                     "width": 900,
                     "height": 700,
-                    "numberOfImagesToChooseFrom": 2000,
+                    "numberOfImagesToChooseFrom": 1000,
                     "columns": 5,
                     "rows": 4
                 }
@@ -165,7 +165,7 @@
                     "layoutY": 200,
                     "width": 900,
                     "height": 700,
-                    "numberOfImagesToChooseFrom": 2000,
+                    "numberOfImagesToChooseFrom": 1000,
                     "columns": 5,
                     "rows": 4,
                     "skipWhenSkipped": "TopRatedWeek"
