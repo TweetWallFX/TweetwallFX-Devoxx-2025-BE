@@ -104,7 +104,7 @@ public class FlickrPhotoDataProvider
                         .ifPresent(s -> cacheBase.getCachedOrLoad(
                         s.getSource(),
                         uc -> add(
-                                uc,
+                                () -> cacheBase.getCachedOrLoad(s.getSource()),
                                 date(photo.getDateTaken()),
                                 additionalData)));
             }
