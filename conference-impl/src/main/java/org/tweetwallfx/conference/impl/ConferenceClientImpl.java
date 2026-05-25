@@ -245,7 +245,7 @@ public final class ConferenceClientImpl implements ConferenceClient, RatingClien
         return RestCallHelper.readOptionalFrom(config.getEventBaseUri() + "talks", listOfMaps())
                 .orElse(List.of())
                 .stream()
-                .filter(talk -> RandomGenerator.getDefault().nextBoolean())
+                .filter(_ignored_ -> RandomGenerator.getDefault().nextBoolean())
                 .map(this::convertTalkToRatedTalk)
                 .toList();
     }
