@@ -53,7 +53,7 @@ dependencies {
     constraints {
         api 'com.github.spotbugs:spotbugs-annotations:4.10.4'
         api 'jakarta.ws.rs:jakarta.ws.rs-api:4.0.0'
-        api 'org.slf4j:slf4j-api:2.0.18'
+        api 'org.slf4j:slf4j-api:2.0.19'
     }
 }
 
